@@ -17,6 +17,23 @@ var (
 	nativeMap = map[string]string{}
 )
 
+func init() {
+	err := json.Unmarshal([]byte(jsonList), &codeMap)
+	if err != nil {
+		panic(err)
+	}
+
+	for code, lang := range codeMap {
+		for _, v := range lang.Name {
+			nameMap[v] = code
+		}
+
+		for _, v := range lang.Native {
+			nativeMap[v] = code
+		}
+	}
+}
+
 func GetLanguageByCode(code string) (Language, error) {
 	l, e := codeMap[code]
 	if !e {
@@ -60,21 +77,4 @@ func GetLanguageByNative(native string) (Language, error) {
 	}
 
 	return GetLanguageByCode(c)
-}
-
-func init() {
-	err := json.Unmarshal([]byte(jsonList), &codeMap)
-	if err != nil {
-		panic(err)
-	}
-
-	for code, lang := range codeMap {
-		for _, v := range lang.Name {
-			nameMap[v] = code
-		}
-
-		for _, v := range lang.Native {
-			nativeMap[v] = code
-		}
-	}
 }
